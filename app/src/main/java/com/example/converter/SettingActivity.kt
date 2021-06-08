@@ -3,44 +3,40 @@ package com.example.converter
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
-import kotlinx.android.synthetic.main.activity_fragment_setting.*
-import kotlinx.android.synthetic.main.activity_main.*
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_setting.*
 
-class FragmentSetting : AppCompatActivity() {
+class SettingActivity : AppCompatActivity() {
 
     val sharedPreferences: SharedPreferences by lazy {
         getSharedPreferences("shared_pref", Context.MODE_PRIVATE)
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_fragment_setting)
-        var editFragment_usd: EditText = findViewById(R.id.edit_usd)
-
+        setContentView(R.layout.activity_setting)
+        val editText_usd: EditText = findViewById(R.id.editText_usd)
 
         val sharedpref_key = sharedPreferences.getString("save_shared", "")
-        editFragment_usd.setText(sharedpref_key)
+        editText_usd.setText(sharedpref_key)
 
-
-        fun sharedpref_save(){
+        fun sharedpref_save() {
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
-            editor.putString("save_shared", editFragment_usd.text.toString())
+            editor.putString("save_shared", editText_usd.text.toString())
             editor.apply()
         }
 
-
-
-            button_send_fragment_activity_save.setOnClickListener {
-            sharedpref_save()
-
+        fun intent_putString() {
             intent = Intent(this, MainActivity::class.java)
-            intent = intent.putExtra("save", editFragment_usd.text.toString())
+            intent = intent.putExtra("save", editText_usd.text.toString())
             startActivity(intent)
-
         }
-
+        button_save_setting_activity.setOnClickListener {
+            sharedpref_save()
+            intent_putString()
+        }
     }
 }

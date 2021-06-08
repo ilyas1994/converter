@@ -32,10 +32,7 @@ class MainActivity : AppCompatActivity() {
             edit_text_current_amount.isEnabled = false
             textview_result.text = "${getString(R.string.go_to_settings)}"
         }
-
-        fun intent(position: Int){
-
-        }
+        
 
         fun count_up() {
             if (!edit_text_current_amount.text.isEmpty()) {

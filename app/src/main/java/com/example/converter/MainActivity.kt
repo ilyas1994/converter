@@ -10,17 +10,42 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_setting.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var edit_text_current_amount: EditText
+
+    // Вылатет и почему то приходит null, вытащил в глобальную переменную
+    // private var getCurrentCurrency = intent.getStringExtra(SHARED_SAVE) по причине что
+    // override fun onClick(view: View) находится за пределами onCreate и не видит переменную
+    // getCurrentCurrency, как сделать так чтобы метод onClick который находится за пределами onCreate
+    // смог увидеть что в есть в методе onCreate
+    private var getCurrentCurrency = intent.getStringExtra(SHARED_SAVE)
+
+   private fun count_up() {
+        if (!edit_text_current_amount.text.isEmpty()) {
+            var getValueFragmentSetting = getCurrentCurrency.toString().toInt()
+            var calculations =
+                edit_text_current_amount.text.toString().toInt() * getValueFragmentSetting
+            textview_result.text = "$calculations ${getString(R.string.tenge)}"
+        } else {
+            Toast.makeText(
+                this,
+                "${getString(R.string.toast_go_to_settings)}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        button_result.setOnClickListener(this)
+        button_save_setting_activity.setOnClickListener(this)
+
         edit_text_current_amount = findViewById(R.id.edit_text_current_amount)
-        val getCurrentCurrency = intent.getStringExtra(SHARED_SAVE)
+//        val getCurrentCurrency = intent.getStringExtra(SHARED_SAVE)
 
         if (getCurrentCurrency != null && edit_text_current_amount.text != null) {
             edit_text_current_amount.isEnabled = true
@@ -47,9 +72,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        button_result.setOnClickListener {
-            count_up()
-        }
+//        button_result.setOnClickListener {
+//            count_up()
+//        }
 
         image_button_setting.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
@@ -72,5 +97,13 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         textview_exhange_usd.text = savedInstanceState.getString("KEY")
         textview_result.text = savedInstanceState.getString("KEY2")
+    }
+
+    override fun onClick(view: View){
+
+        when(view.id){
+            R.id.button_result -> count_up()
+
+        }
     }
 }

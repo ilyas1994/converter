@@ -1,7 +1,6 @@
 package com.example.converter
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,19 +8,19 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_setting.*
 
 class MainActivity : AppCompatActivity() {
 
-  lateinit var edit_text_current_amount: EditText
+    private lateinit var edit_text_current_amount: EditText
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         edit_text_current_amount = findViewById(R.id.edit_text_current_amount)
-        val getCurrentCurrency = intent.getStringExtra("save")
+        val getCurrentCurrency = intent.getStringExtra(SHARED_SAVE)
 
         if (getCurrentCurrency != null && edit_text_current_amount.text != null) {
             edit_text_current_amount.isEnabled = true
@@ -32,7 +31,6 @@ class MainActivity : AppCompatActivity() {
             edit_text_current_amount.isEnabled = false
             textview_result.text = "${getString(R.string.go_to_settings)}"
         }
-        
 
         fun count_up() {
             if (!edit_text_current_amount.text.isEmpty()) {
@@ -52,11 +50,27 @@ class MainActivity : AppCompatActivity() {
         button_result.setOnClickListener {
             count_up()
         }
+
         image_button_setting.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 Intent(this@MainActivity, SettingActivity::class.java).also { intent = it }
                 startActivity(intent)
             }
         })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.run {
+            putString("KEY", textview_exhange_usd.text.toString())
+            putString("KEY2", textview_result.text.toString())
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        textview_exhange_usd.text = savedInstanceState.getString("KEY")
+        textview_result.text = savedInstanceState.getString("KEY2")
     }
 }
